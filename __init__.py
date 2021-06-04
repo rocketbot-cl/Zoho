@@ -155,11 +155,12 @@ if module == "create_document":
         actions_list = []
         if req_data["is_sequential"]:
             for i in range(len(names)):
-                actions_list.append({"recipient_name":names[i],"recipient_email":emails[i],"action_type":actions[i],"private_notes":pm[i],"signing_order":signing_order[i]})
+                actions_list.append({"recipient_name":names[i],"recipient_email":emails[i],"action_type":actions[i],"private_notes":pm[i],
+                                     "signing_order":signing_order[i], "in_person_name": names[i], "verification_type": "EMAIL"})
         else:
             for i in range(len(names)):
                 actions_list.append({"recipient_name": names[i], "recipient_email": emails[i], "action_type": actions[i],
-                                     "private_notes": pm[i]})
+                                     "private_notes": pm[i], "in_person_name": names[i], "verification_type": "EMAIL"})
         req_data['actions'] = actions_list
         data = {'requests': req_data}
         data_json={'data':json.dumps(data)}
@@ -208,9 +209,10 @@ if module == "share":
         data = {}
         data['requests'] = req_data
         data_json = {}
-        data_json['data'] = json.dumps(data)
+        data_json['data'] = data
         url = 'https://sign.zoho.com/api/v1/requests/' + request_id + '/submit'
         r = requests.post(url, files=[], data=data_json, headers=headers)
+        print(data)
         print(r)
 
     except Exception as e:
@@ -253,7 +255,7 @@ if module == "add_field":
 
         tempfield = {"field_type_name": field_type_name,"is_mandatory": is_mandatory, "field_name": field_name,
                      "page_no": page_no, "y_coord": y_coord, "abs_width": abs_width, "description_tooltip": description_tooltip,
-                     "x_coord": x_coord, "abs_height": abs_height, "document_id": docId}
+                     "x_coord": x_coord, "abs_height": abs_height, "document_id": docId, "field"}
 
         tempfield = json.dumps(tempfield)
 
