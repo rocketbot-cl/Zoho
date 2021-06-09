@@ -689,7 +689,7 @@
               "en": "field name"
             },
             "id": "field_name",
-            "css": "col-md-12"
+            "css": "col-md-6"
           },
           {
             "type": "input",
@@ -706,7 +706,7 @@
               "en": "Page number you want the field on"
             },
             "id": "page_no",
-            "css": "col-md-12"
+            "css": "col-md-6"
           },
           {
             "type": "input",
@@ -723,7 +723,7 @@
               "en": "The document/file you want the field on"
             },
             "id": "doc_no",
-            "css": "col-md-12"
+            "css": "col-md-6"
           },
           {
             "type": "input",
@@ -740,7 +740,7 @@
               "en": "insert variable holding the response json"
             },
             "id": "var1",
-            "css": "col-md-12"
+            "css": "col-md-6"
           },
           {
             "type": "input",
@@ -757,7 +757,7 @@
               "en": "y-coordinate of the field"
             },
             "id": "y_coord",
-            "css": "col-md-12"
+            "css": "col-md-6"
           },
           {
             "type": "input",
@@ -774,7 +774,7 @@
               "en": "x-coordinate of the field"
             },
             "id": "x_coord",
-            "css": "col-md-12"
+            "css": "col-md-6"
           },
           {
             "type": "input",
@@ -791,7 +791,7 @@
               "en": "width of the field"
             },
             "id": "abs_width",
-            "css": "col-md-12"
+            "css": "col-md-6"
           },
           {
             "type": "input",
@@ -808,7 +808,7 @@
               "en": "height of the field"
             },
             "id": "abs_height",
-            "css": "col-md-12"
+            "css": "col-md-6"
           },
           {
             "type": "input",
@@ -825,7 +825,7 @@
               "en": "description of the field"
             },
             "id": "description_tooltip",
-            "css": "col-md-12"
+            "css": "col-md-6"
           },
           {
             "type": "input",
@@ -842,7 +842,7 @@
               "en": "variable to store field information"
             },
             "id": "field_info",
-            "css": "col-md-12"
+            "css": "col-md-6"
           }
         ]
       },

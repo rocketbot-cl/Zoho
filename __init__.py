@@ -26,6 +26,7 @@ Para instalar librerias se debe ingresar por terminal a la carpeta "libs"
 import os
 import sys
 import ast
+from functions import submitDocument
 
 module = GetParams("module")
 
@@ -189,32 +190,46 @@ if module == "share":
     field_info = GetVar(temp)
 
     try:
+
         headers = {'Authorization': 'Zoho-oauthtoken ' + oauth}
         respjson = json.loads(response)
+
         req_data = {}
         respjson = respjson['requests']
         request_id = respjson['request_id']
+        a = submitDocument(request_id, respjson, oauth, field_info)
+        """
         req_data['request_name'] = respjson['request_name']
         actionsJsonArray = respjson['actions']
+        docIdsJsonArray = respjson['document_ids']
         field_info = list(field_info.split(",,"))
-        for j in actionsJsonArray:
-            fields = []
-            for i in range(len(field_info)):
-                fields.append(json.loads(field_info[i]))
-            j["fields"] = fields
-            j.pop('is_bulk', None)
-            j.pop('allow_signing', None)
-            j.pop('action_status', None)
+        for i in docIdsJsonArray:
+            docId = i["document_id"]
+            for j in actionsJsonArray:
+                fields = []
+                for i in range(len(field_info)):
+                    field = json.loads(field_info[i])
+                    field["document_id"]=docId
+                    fields.append(field)
+                    print(fields)
+                if 'fields' in j:
+                    j['fields'] = j['fields'] + fields
+                else:
+                    j["fields"] = fields
+                j.pop('is_bulk', None)
+                j.pop('allow_signing', None)
+                j.pop('action_status', None)
+                print(j)
         req_data['actions'] = actionsJsonArray
         data = {}
         data['requests'] = req_data
         data_json = {}
-        data_json['data'] = data
+        data_json['data'] = json.dumps(data)
         url = 'https://sign.zoho.com/api/v1/requests/' + request_id + '/submit'
         r = requests.post(url, files=[], data=data_json, headers=headers)
-        print(data)
         print(r)
-
+        print(r.json())
+        """
     except Exception as e:
         print("\x1B[" + "31;40mError\u2193\x1B[" + "0m")
         PrintException()
@@ -241,21 +256,21 @@ if module == "add_field":
     respjson = json.loads(strresponse)
     respjson = respjson['requests']
     docIdsJsonArray = respjson['document_ids']
-    docIds = [i["document_id"] for i in docIdsJsonArray]
+    #docIds = [i["document_id"] for i in docIdsJsonArray]
 
     if is_mandatory == "True":
         is_mandatory = True
     else:
         is_mandatory = False
 
-    docIndex = int(doc_no) - 1
-    docId = int(docIds[docIndex])
+    #docIndex = int(doc_no) - 1
+    #docId = int(docIds[docIndex])
 
     try:
 
         tempfield = {"field_type_name": field_type_name,"is_mandatory": is_mandatory, "field_name": field_name,
-                     "page_no": page_no, "y_coord": y_coord, "abs_width": abs_width, "description_tooltip": description_tooltip,
-                     "x_coord": x_coord, "abs_height": abs_height, "document_id": docId, "field"}
+                     "page_no": int(page_no), "y_coord": int(y_coord), "abs_width": int(abs_width), "description_tooltip": description_tooltip,
+                     "x_coord": int(x_coord), "abs_height": int(abs_height)}
 
         tempfield = json.dumps(tempfield)
 
