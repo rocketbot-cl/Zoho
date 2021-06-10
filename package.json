@@ -703,7 +703,7 @@
             },
             "help": {
               "es": " ",
-              "en": "Page number you want the field on"
+              "en": "Page number you want the field on (starting from 0)"
             },
             "id": "page_no",
             "css": "col-md-6"
@@ -720,7 +720,7 @@
             },
             "help": {
               "es": " ",
-              "en": "The document/file you want the field on"
+              "en": "The document/file you want the field on (starting from 0)"
             },
             "id": "doc_no",
             "css": "col-md-6"

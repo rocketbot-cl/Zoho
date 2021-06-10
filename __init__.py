@@ -23,10 +23,16 @@ Para instalar librerias se debe ingresar por terminal a la carpeta "libs"
     pip install <package> -t .
 
 """
+
+
 import os
 import sys
 import ast
-from functions import submitDocument
+base_path = tmp_global_obj["basepath"]
+cur_path = base_path + "modules" + os.sep + "zoho" + os.sep + "libs" + os.sep
+if cur_path not in sys.path:
+    sys.path.append(cur_path)
+from zoho import submitDocument
 
 module = GetParams("module")
 
@@ -89,7 +95,6 @@ if module == "create_document":
     nSigning_order = GetParams("signing_order")
     nPm = GetParams("pm")
 
-    print(nSigning_order)
     names = GetVar(nNames)
     emails = GetVar(nEmails)
     actions = GetVar(nActions)
@@ -197,39 +202,10 @@ if module == "share":
         req_data = {}
         respjson = respjson['requests']
         request_id = respjson['request_id']
+        field_info = eval(field_info)
         a = submitDocument(request_id, respjson, oauth, field_info)
-        """
-        req_data['request_name'] = respjson['request_name']
-        actionsJsonArray = respjson['actions']
-        docIdsJsonArray = respjson['document_ids']
-        field_info = list(field_info.split(",,"))
-        for i in docIdsJsonArray:
-            docId = i["document_id"]
-            for j in actionsJsonArray:
-                fields = []
-                for i in range(len(field_info)):
-                    field = json.loads(field_info[i])
-                    field["document_id"]=docId
-                    fields.append(field)
-                    print(fields)
-                if 'fields' in j:
-                    j['fields'] = j['fields'] + fields
-                else:
-                    j["fields"] = fields
-                j.pop('is_bulk', None)
-                j.pop('allow_signing', None)
-                j.pop('action_status', None)
-                print(j)
-        req_data['actions'] = actionsJsonArray
-        data = {}
-        data['requests'] = req_data
-        data_json = {}
-        data_json['data'] = json.dumps(data)
-        url = 'https://sign.zoho.com/api/v1/requests/' + request_id + '/submit'
-        r = requests.post(url, files=[], data=data_json, headers=headers)
-        print(r)
-        print(r.json())
-        """
+        print(a)
+
     except Exception as e:
         print("\x1B[" + "31;40mError\u2193\x1B[" + "0m")
         PrintException()
@@ -267,20 +243,29 @@ if module == "add_field":
     #docId = int(docIds[docIndex])
 
     try:
+        if field_type_name == "Email":
+            tempfield = {"field_type_name": field_type_name,
+                         "text_property": {"is_italic": False, "is_underline": False, "font_color": "000000", "font_size": 11, "is_read_only": False, "is_bold": False, "font": "Arial"},
+                         "is_mandatory": is_mandatory,
+                         "field_name": field_type_name,
+                         "page_no": int(page_no), "y_coord": int(y_coord), "abs_width": int(abs_width),
+                         "description_tooltip": description_tooltip,
+                         "x_coord": int(x_coord), "abs_height": int(abs_height), "document_id": int(doc_no)}
+        else:
+            tempfield = {"field_type_name": field_type_name,"is_mandatory": is_mandatory, "field_name": field_type_name,
+                         "page_no": int(page_no), "y_coord": int(y_coord), "abs_width": int(abs_width), "description_tooltip": description_tooltip,
+                         "x_coord": int(x_coord), "abs_height": int(abs_height),"document_id": int(doc_no)}
 
-        tempfield = {"field_type_name": field_type_name,"is_mandatory": is_mandatory, "field_name": field_name,
-                     "page_no": int(page_no), "y_coord": int(y_coord), "abs_width": int(abs_width), "description_tooltip": description_tooltip,
-                     "x_coord": int(x_coord), "abs_height": int(abs_height)}
-
-        tempfield = json.dumps(tempfield)
 
 
         if not field_data:
-            totalfields = field_data + str(tempfield)
-            SetVar(field_info, totalfields)
+            fieldList = [tempfield]
+            SetVar(field_info, fieldList)
         else:
-            totalfields = field_data + ",," + str(tempfield)
-            SetVar(field_info, totalfields)
+            field_data = eval(field_data)
+            print(field_data)
+            field_data.append(tempfield)
+            SetVar(field_info, field_data)
 
     except Exception as e:
         print("\x1B[" + "31;40mError\u2193\x1B[" + "0m")
