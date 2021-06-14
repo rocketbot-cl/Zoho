@@ -27,15 +27,19 @@ Para instalar librerias se debe ingresar por terminal a la carpeta "libs"
 
 import os
 import sys
-import ast
 base_path = tmp_global_obj["basepath"]
 cur_path = base_path + "modules" + os.sep + "zoho" + os.sep + "libs" + os.sep
 if cur_path not in sys.path:
     sys.path.append(cur_path)
-from zoho import submitDocument
+from zoho import submitDocument, Zoho
 
 module = GetParams("module")
 
+global mod_zoho
+
+if module == "login":
+    mod_zoho = Zoho(client_id="client",client_secret="client")
+    mod_zoho.login()
 
 if module == "add_person":
     name = GetParams("name")
@@ -44,74 +48,16 @@ if module == "add_person":
     signing_order = GetParams("signing_order")
     pm = GetParams("pm")
     try:
-        var1 = GetParams("var1")
-        data1 = GetVar(var1)
-        if not data1:
-            SetVar(var1, data1 + name)
-        else:
-            SetVar(var1, data1 + "," + name)
 
-        var2 = GetParams("var2")
-        data2 = GetVar(var2)
-        if not data1:
-            SetVar(var2, data2 + email)
-        else:
-            SetVar(var2, data2 + "," + email)
+        mod_zoho.add_person(name, email, action, signing_order, pm)
+        #mod_zoho = Zoho(name, email, action, signing_order, pm)
 
-        var3 = GetParams("var3")
-        data3 = GetVar(var3)
-        if not data3:
-            SetVar(var3, data3 + action)
-        else:
-            SetVar(var3, data3 + "," + action)
-
-        var4 = GetParams("var4")
-        data4 = GetVar(var4)
-        if signing_order:
-            if not data4:
-                SetVar(var4, data4 + signing_order)
-            else:
-                SetVar(var4, data4 + "," + signing_order)
-
-        var5 = GetParams("var5")
-        data5 = GetVar(var5)
-        if pm:
-            if not data5:
-                SetVar(var5, data5 + pm)
-            else:
-                SetVar(var5, data5 + "," + pm)
-        else:
-            SetVar(var5, data5 + ",")
     except Exception as e:
-        print("\x1B[" + "31;40mError\u2193\x1B[" + "0m")
+        print("\x1B[" + "31;40mError\x1B[" + "0m")
         PrintException()
         raise e
 
 if module == "create_document":
-
-    nNames = GetParams("names")
-    nEmails = GetParams("emails")
-    nActions = GetParams("actions")
-    nSigning_order = GetParams("signing_order")
-    nPm = GetParams("pm")
-
-    names = GetVar(nNames)
-    emails = GetVar(nEmails)
-    actions = GetVar(nActions)
-    signing_order = GetVar(nSigning_order)
-    pm = GetVar(nPm)
-
-    names = list(names.split(","))
-    emails = list(emails.split(","))
-    actions = list(actions.split(","))
-    signing_order = list(signing_order.split(","))
-    pm = list(pm.split(","))
-
-    #print(names)
-    #print(emails)
-    #print(actions)
-    #print(signing_order)
-    #print(pm)
 
     refresh_token = GetParams("refresh_token")
     client_id = GetParams("client_id")
@@ -126,54 +72,35 @@ if module == "create_document":
 
     oauth = GetParams("var2")
     try:
-
-        url = 'https://accounts.zoho.com/oauth/v2/token?refresh_token=' + refresh_token + '&client_id=' + client_id + '&client_secret=' + client_secret + '&redirect_uri=https%3A%2F%2Fsign.zoho.com&grant_type=refresh_token'
-        response = requests.post(url)
-        resp_json = response.json()
-        access_token = resp_json['access_token']
-        SetVar(oauth, access_token)
-        headers = {'Authorization': 'Zoho-oauthtoken ' + access_token}
-        files = []
+        names, emails, actions,signing_order,pm = mod_zoho.get_data()
+        
         fileList = []
+        req_data = {}
         for f in os.listdir(folder):
             #files.append(folder + '/' + f)
             fileList.append([f,folder + '/' + f,"application/pdf"])
 
-        for i in fileList:
-            files.append(('file', (i[0], open(i[1], 'rb'), i[2])))
+        req_data['request_name'] = reqname
+        req_data["is_sequential"] = False
+        req_data["email_reminders"] = False
 
-        if not exp_date:
-            exp_date = 15
-
-        req_data = {'request_name': reqname, "expiration_days": exp_date}
-
+        if exp_date:
+            req_data["expiration_days"] = exp_date
+        
         if sequential == "True":
             req_data["is_sequential"] = True
-        else:
-            req_data["is_sequential"] = False
-
+            
         if bool_reminder == "True":
             req_data["email_reminders"] = True
             req_data["reminder_period"] = reminder
-        else:
-            req_data["email_reminders"] = False
 
-        actions_list = []
-        if req_data["is_sequential"]:
-            for i in range(len(names)):
-                actions_list.append({"recipient_name":names[i],"recipient_email":emails[i],"action_type":actions[i],"private_notes":pm[i],
-                                     "signing_order":signing_order[i], "in_person_name": names[i], "verification_type": "EMAIL"})
-        else:
-            for i in range(len(names)):
-                actions_list.append({"recipient_name": names[i], "recipient_email": emails[i], "action_type": actions[i],
-                                     "private_notes": pm[i], "in_person_name": names[i], "verification_type": "EMAIL"})
+
+        actions_list = mod_zoho.create_actions(req_data["is_sequential"])
         req_data['actions'] = actions_list
-        data = {'requests': req_data}
-        data_json={'data':json.dumps(data)}
-        url2 = 'https://sign.zoho.com/api/v1/requests'
-        r = requests.post(url2, files=files, data=data_json, headers=headers)
-        respjson = r.json()
+        respjson = mod_zoho.create_document(fileList, **req_data)
+        
         SetVar(respvar,json.dumps(respjson))
+
         """
         respjson = respjson['requests']
         docIdsJsonArray = respjson['document_ids']
@@ -181,7 +108,7 @@ if module == "create_document":
         SetVar(nId,docIds)
         """
     except Exception as e:
-        print("\x1B[" + "31;40mError\u2193\x1B[" + "0m")
+        print("\x1B[" + "31;40mError\x1B[" + "0m")
         PrintException()
         raise e
 
@@ -207,7 +134,7 @@ if module == "share":
         print(a)
 
     except Exception as e:
-        print("\x1B[" + "31;40mError\u2193\x1B[" + "0m")
+        print("\x1B[" + "31;40mError\x1B[" + "0m")
         PrintException()
         raise e
 
@@ -268,7 +195,7 @@ if module == "add_field":
             SetVar(field_info, field_data)
 
     except Exception as e:
-        print("\x1B[" + "31;40mError\u2193\x1B[" + "0m")
+        print("\x1B[" + "31;40mError\x1B[" + "0m")
         PrintException()
         raise e
 
