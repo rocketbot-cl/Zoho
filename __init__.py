@@ -31,15 +31,19 @@ base_path = tmp_global_obj["basepath"]
 cur_path = base_path + "modules" + os.sep + "zoho" + os.sep + "libs" + os.sep
 if cur_path not in sys.path:
     sys.path.append(cur_path)
-from zoho import submitDocument, Zoho
+from zoho import Zoho
 
 module = GetParams("module")
 
 global mod_zoho
 
 if module == "login":
-    mod_zoho = Zoho(client_id="client",client_secret="client")
+    client_id = GetParams("client_id")
+    client_secret = GetParams("client_secret")
+    refresh_token = GetParams("refresh_token")
+    mod_zoho = Zoho(client_id, client_secret, refresh_token)
     mod_zoho.login()
+
 
 if module == "add_person":
     name = GetParams("name")
@@ -73,7 +77,7 @@ if module == "create_document":
     oauth = GetParams("var2")
     try:
         names, emails, actions,signing_order,pm = mod_zoho.get_data()
-        
+
         fileList = []
         req_data = {}
         for f in os.listdir(folder):
@@ -86,10 +90,10 @@ if module == "create_document":
 
         if exp_date:
             req_data["expiration_days"] = exp_date
-        
+
         if sequential == "True":
             req_data["is_sequential"] = True
-            
+
         if bool_reminder == "True":
             req_data["email_reminders"] = True
             req_data["reminder_period"] = reminder
@@ -98,7 +102,7 @@ if module == "create_document":
         actions_list = mod_zoho.create_actions(req_data["is_sequential"])
         req_data['actions'] = actions_list
         respjson = mod_zoho.create_document(fileList, **req_data)
-        
+
         SetVar(respvar,json.dumps(respjson))
 
         """
@@ -130,7 +134,7 @@ if module == "share":
         respjson = respjson['requests']
         request_id = respjson['request_id']
         field_info = eval(field_info)
-        a = submitDocument(request_id, respjson, oauth, field_info)
+        a = mod_zoho.submitDocument(request_id, respjson, oauth, field_info)
         print(a)
 
     except Exception as e:
