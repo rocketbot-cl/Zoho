@@ -242,57 +242,6 @@
       "form": {
         "css": "modal-lg",
         "inputs": [
-          {
-            "type": "input",
-            "placeholder": {
-              "es": " ",
-              "en": " "
-            },
-            "title": {
-              "es": " ",
-              "en": "Variable token:"
-            },
-            "help": {
-              "es": " ",
-              "en": "enter the variable containing the response"
-            },
-            "id": "response",
-            "css": "col-md-12"
-          },
-          {
-            "type": "input",
-            "placeholder": {
-              "es": " ",
-              "en": " "
-            },
-            "title": {
-              "es": " ",
-              "en": "Variable:"
-            },
-            "help": {
-              "es": " ",
-              "en": "enter the variable containing the oauth token"
-            },
-            "id": "oauth",
-            "css": "col-md-12"
-          },
-          {
-            "type": "input",
-            "placeholder": {
-              "es": " ",
-              "en": " "
-            },
-            "title": {
-              "es": " ",
-              "en": "Variable:"
-            },
-            "help": {
-              "es": " ",
-              "en": "enter the variable containing the field info"
-            },
-            "id": "field_info",
-            "css": "col-md-12"
-          }
         ]
       },
       "video_youtube": "",
@@ -430,31 +379,14 @@
             },
             "title": {
               "es": " ",
-              "en": "Variable:"
+              "en": "Success:"
             },
             "help": {
               "es": " ",
-              "en": "Variable to store response"
+              "en": "Select a variable to hold the result of the create document action (True means it worked False means it failed)"
             },
-            "id": "var1",
+            "id": "result",
             "css": "col-lg-6"
-          },
-          {
-            "type": "input",
-            "placeholder": {
-              "es": " ",
-              "en": "{var}"
-            },
-            "title": {
-              "es": " ",
-              "en": "Variable"
-            },
-            "help": {
-              "es": " ",
-              "en": "select variable to store the oauth token"
-            },
-            "id": "var2",
-            "css": "col-md-12"
           }
         ]
       },
@@ -594,23 +526,6 @@
             },
             "title": {
               "es": " ",
-              "en": "Variable:"
-            },
-            "help": {
-              "es": " ",
-              "en": "insert variable holding the response json"
-            },
-            "id": "var1",
-            "css": "col-md-6"
-          },
-          {
-            "type": "input",
-            "placeholder": {
-              "es": " ",
-              "en": " "
-            },
-            "title": {
-              "es": " ",
               "en": "Y-Coordinate:"
             },
             "help": {
@@ -686,23 +601,6 @@
               "en": "description of the field"
             },
             "id": "description_tooltip",
-            "css": "col-md-6"
-          },
-          {
-            "type": "input",
-            "placeholder": {
-              "es": " ",
-              "en": " "
-            },
-            "title": {
-              "es": " ",
-              "en": "Variable:"
-            },
-            "help": {
-              "es": " ",
-              "en": "variable to store field information"
-            },
-            "id": "field_info",
             "css": "col-md-6"
           }
         ]

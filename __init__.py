@@ -38,12 +38,17 @@ module = GetParams("module")
 global mod_zoho
 
 if module == "login":
-    client_id = GetParams("client_id")
-    client_secret = GetParams("client_secret")
-    refresh_token = GetParams("refresh_token")
-    mod_zoho = Zoho(client_id, client_secret, refresh_token)
-    mod_zoho.login()
+    try:
+        client_id = GetParams("client_id")
+        client_secret = GetParams("client_secret")
+        refresh_token = GetParams("refresh_token")
+        mod_zoho = Zoho(client_id, client_secret, refresh_token)
+        mod_zoho.login()
 
+    except Exception as e:
+        print("\x1B[" + "31;40mError\x1B[" + "0m")
+        PrintException()
+        raise e
 
 if module == "add_person":
     name = GetParams("name")
@@ -72,9 +77,9 @@ if module == "create_document":
     reminder = GetParams("reminder")
     sequential = GetParams("sequential")
     bool_reminder = GetParams("bool_reminder")
-    respvar = GetParams("var1")
+    result = GetParams("result")
+    #respvar = GetParams("var1")
 
-    oauth = GetParams("var2")
     try:
         names, emails, actions,signing_order,pm = mod_zoho.get_data()
 
@@ -101,9 +106,12 @@ if module == "create_document":
 
         actions_list = mod_zoho.create_actions(req_data["is_sequential"])
         req_data['actions'] = actions_list
-        respjson = mod_zoho.create_document(fileList, **req_data)
+        respjson = mod_zoho.createDocument(fileList, **req_data)
 
-        SetVar(respvar,json.dumps(respjson))
+        print(respjson["status"])
+        if respjson["status"] == 'success':
+            SetVar(result, "True")
+
 
         """
         respjson = respjson['requests']
@@ -118,24 +126,16 @@ if module == "create_document":
 
 
 if module == "share":
-    temp = GetParams("response")
-    response = GetVar(temp)
-    temp = GetParams("oauth")
-    oauth = GetVar(temp)
-    temp = GetParams("field_info")
-    field_info = GetVar(temp)
-
     try:
 
-        headers = {'Authorization': 'Zoho-oauthtoken ' + oauth}
-        respjson = json.loads(response)
+        headers = {'Authorization': 'Zoho-oauthtoken ' + mod_zoho.access_token}
+        respjson = mod_zoho.response
 
         req_data = {}
         respjson = respjson['requests']
         request_id = respjson['request_id']
-        field_info = eval(field_info)
-        a = mod_zoho.submitDocument(request_id, respjson, oauth, field_info)
-        print(a)
+        #field_info = eval(field_info)
+        a = mod_zoho.submitDocument(request_id, respjson, mod_zoho.access_token, mod_zoho.field_info)
 
     except Exception as e:
         print("\x1B[" + "31;40mError\x1B[" + "0m")
@@ -153,14 +153,12 @@ if module == "add_field":
     abs_height = GetParams("abs_height")
     description_tooltip = GetParams("description_tooltip")
 
-    field_info = GetParams("field_info")
-    field_data = GetVar(field_info)
+
 
     doc_no = GetParams("doc_no")
-    temp = GetParams("var1")
-    strresponse = GetVar(temp)
 
-    respjson = json.loads(strresponse)
+
+    respjson = mod_zoho.response
     respjson = respjson['requests']
     docIdsJsonArray = respjson['document_ids']
     #docIds = [i["document_id"] for i in docIdsJsonArray]
@@ -187,16 +185,9 @@ if module == "add_field":
                          "page_no": int(page_no), "y_coord": int(y_coord), "abs_width": int(abs_width), "description_tooltip": description_tooltip,
                          "x_coord": int(x_coord), "abs_height": int(abs_height),"document_id": int(doc_no)}
 
+        mod_zoho.addField(tempfield)
 
 
-        if not field_data:
-            fieldList = [tempfield]
-            SetVar(field_info, fieldList)
-        else:
-            field_data = eval(field_data)
-            print(field_data)
-            field_data.append(tempfield)
-            SetVar(field_info, field_data)
 
     except Exception as e:
         print("\x1B[" + "31;40mError\x1B[" + "0m")
