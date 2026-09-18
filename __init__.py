@@ -42,10 +42,14 @@ if module == "login":
         client_id = GetParams("client_id")
         client_secret = GetParams("client_secret")
         refresh_token = GetParams("refresh_token")
+        res = GetParams("res")
+        
         mod_zoho = Zoho(client_id, client_secret, refresh_token)
         mod_zoho.login()
-
+        
+        SetVar(res, "True")
     except Exception as e:
+        SetVar(res, "False")
         print("\x1B[" + "31;40mError\x1B[" + "0m")
         PrintException()
         raise e
@@ -56,12 +60,15 @@ if module == "add_person":
     action = GetParams("action")
     signing_order = GetParams("signing_order")
     pm = GetParams("pm")
+    res= GetParams("res")
     try:
 
         mod_zoho.add_person(name, email, action, signing_order, pm)
+        SetVar(res, "True")
         #mod_zoho = Zoho(name, email, action, signing_order, pm)
 
     except Exception as e:
+        SetVar(res, "False")
         print("\x1B[" + "31;40mError\x1B[" + "0m")
         PrintException()
         raise e
@@ -78,7 +85,6 @@ if module == "create_document":
     sequential = GetParams("sequential")
     bool_reminder = GetParams("bool_reminder")
     result = GetParams("result")
-    #respvar = GetParams("var1")
 
     try:
         names, emails, actions,signing_order,pm = mod_zoho.get_data()
@@ -96,21 +102,31 @@ if module == "create_document":
         if exp_date:
             req_data["expiration_days"] = exp_date
 
-        if sequential == "True":
+        
+        if sequential == "True" or str(sequential).lower() in ["true", "1"]:
             req_data["is_sequential"] = True
 
-        if bool_reminder == "True":
+        if bool_reminder == "True" or str(bool_reminder).lower() in ["true", "1"]:
             req_data["email_reminders"] = True
             req_data["reminder_period"] = reminder
-
-
+        
         actions_list = mod_zoho.create_actions(req_data["is_sequential"])
-        req_data['actions'] = actions_list
+        
+        req_data["actions"] = actions_list
+
         respjson = mod_zoho.createDocument(fileList, **req_data)
 
-        print(respjson["status"])
-        if respjson["status"] == 'success':
+
+        if isinstance(respjson, dict) and respjson.get("status") == "success":
             SetVar(result, "True")
+        else:
+            SetVar(result, "False")
+            
+        
+
+        # print(respjson["status"])
+        # if respjson["status"] == 'success':
+        #     SetVar(result, "True")
 
 
         """
@@ -127,7 +143,6 @@ if module == "create_document":
 
 if module == "share":
     try:
-
         headers = {'Authorization': 'Zoho-oauthtoken ' + mod_zoho.access_token}
         respjson = mod_zoho.response
 
@@ -136,13 +151,17 @@ if module == "share":
         request_id = respjson['request_id']
         #field_info = eval(field_info)
         a = mod_zoho.submitDocument(request_id, respjson, mod_zoho.access_token, mod_zoho.field_info)
-        print("Submit Response", a)
+        
+        mod_zoho.field_info = []
+        Zoho.field_info = []
     except Exception as e:
         print("\x1B[" + "31;40mError\x1B[" + "0m")
         PrintException()
         raise e
 
+
 if module == "add_field":
+    print("ENTRO AL COMANDO")
     field_type_name = GetParams("field_type_name")
     is_mandatory = GetParams("is_mandatory")
     field_name = GetParams("field_name")
@@ -153,44 +172,56 @@ if module == "add_field":
     abs_height = GetParams("abs_height")
     description_tooltip = GetParams("description_tooltip")
 
-
-
     doc_no = GetParams("doc_no")
-
-
-    respjson = mod_zoho.response
-    respjson = respjson['requests']
-    docIdsJsonArray = respjson['document_ids']
-    #docIds = [i["document_id"] for i in docIdsJsonArray]
-
-    if is_mandatory == "True":
-        is_mandatory = True
-    else:
-        is_mandatory = False
-
-    #docIndex = int(doc_no) - 1
-    #docId = int(docIds[docIndex])
-
+    recipient_index = GetParams("recipient_index")
+    result = GetParams("result")
+    
     try:
-        if field_type_name == "Email":
-            tempfield = {"field_type_name": field_type_name,
-                         "text_property": {"is_italic": False, "is_underline": False, "font_color": "000000", "font_size": 11, "is_read_only": False, "is_bold": False, "font": "Arial"},
-                         "is_mandatory": is_mandatory,
-                         "field_name": field_type_name,
-                         "page_no": int(page_no), "y_coord": int(y_coord), "abs_width": int(abs_width),
-                         "description_tooltip": description_tooltip,
-                         "x_coord": int(x_coord), "abs_height": int(abs_height), "document_id": int(doc_no)}
+        respjson = mod_zoho.response
+        docIdsJsonArray = respjson.get("requests", {}).get("document_ids", [])
+
+        doc_idx = int(doc_no) if doc_no else 0
+        if doc_idx < len(docIdsJsonArray):
+            real_doc_id = docIdsJsonArray[doc_idx]["document_id"]
         else:
-            tempfield = {"field_type_name": field_type_name,"is_mandatory": is_mandatory, "field_name": field_type_name,
-                         "page_no": int(page_no), "y_coord": int(y_coord), "abs_width": int(abs_width), "description_tooltip": description_tooltip,
-                         "x_coord": int(x_coord), "abs_height": int(abs_height),"document_id": int(doc_no)}
+            raise Exception(f"El índice de documento {doc_idx} no existe en la solicitud.")
+
+        mandatory = True if is_mandatory in ["True", True] else False
+        rec_idx = int(recipient_index) if recipient_index else 0
+
+        tempfield = {
+            "field_type_name": field_type_name,
+            "is_mandatory": mandatory,
+            "field_name": field_name or field_type_name,
+            "page_no": int(page_no) if page_no else 0,
+            "y_coord": int(y_coord),
+            "x_coord": int(x_coord),
+            "abs_width": int(abs_width),
+            "abs_height": int(abs_height),
+            "description_tooltip": description_tooltip or "",
+            "document_id": real_doc_id,
+            "recipient_index": rec_idx 
+        }
+
+        if field_type_name == "Email":
+            tempfield["text_property"] = {
+                "is_italic": False,
+                "is_underline": False,
+                "font_color": "000000",
+                "font_size": 11,
+                "is_read_only": False,
+                "is_bold": False,
+                "font": "Arial"
+            }
 
         mod_zoho.addField(tempfield)
 
-
+        if result:
+            SetVar(result, True)
 
     except Exception as e:
-        print("\x1B[" + "31;40mError\x1B[" + "0m")
+        if result:
+            SetVar(result, False)
+        print("\x1B[31;40mError\x1B[0m")
         PrintException()
         raise e
-
