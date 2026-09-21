@@ -41,7 +41,8 @@ Antes de usar este módulo, es necesario la configuración en Zoho Developer Con
 
     https://accounts.zoho.com/oauth/v2/auth?scope=ZohoSign.documents.ALL&client_id=[CLIENT_ID]&response_type=code&access_type=offline&redirect_uri=https://sign.zoho.com (Si la cuenta está alojada en el servidor de Europa, cambien accounts.zoho.com por accounts.zoho.eu).
 
-    - Hagan clic en Aceptar. La página redirigirá a una dirección como [https://sign.zoho.com/?code=1000.xxxxxxxxx](https://sign.zoho.com/?code=1000.xxxxxxxxx)...
+    -
+ Hagan clic en Aceptar. La página redirigirá a una dirección como [https://sign.zoho.com/?code=1000.xxxxxxxxx](https://sign.zoho.com/?code=1000.xxxxxxxxx)...
 
     - Seleccione unicamente el texto que aparece despues del code= (No debe incluir otros parametros, en caso de que los haya)
 
@@ -51,7 +52,7 @@ Antes de usar este módulo, es necesario la configuración en Zoho Developer Con
 
     - Copie y ejecute el siguiente comando reemplazando sus credenciales reales y presione Enter:
 
-     curl -X POST https://accounts.zoho.com/oauth/v2/token -d "grant_type=authorization_code" -d "client_id=TU_CLIENT_ID" -d "client_secret=TU_CLIENT_SECRET" -d "redirect_uri=https://sign.zoho.com" -d "code=EL_CODIGO_COPIADO"
+    curl -X POST https://accounts.zoho.com/oauth/v2/token -d "grant_type=authorization_code" -d "client_id=TU_CLIENT_ID" -d "client_secret=TU_CLIENT_SECRET" -d "redirect_uri=https://sign.zoho.com" -d "code=EL_CODIGO_COPIADO"
 
     - En la respuesta JSON que devuelve la consola, copie el valor de "refresh_token". Este valor es el que se ingresará en el comando Login de Rocketbot.
 
@@ -68,7 +69,7 @@ participen)
 
     - Enviar
 
-    - Todos los comandos deben tener todos sus campos completos, no pueden quedar campos vacios.
+Todos los comandos deben tener todos sus campos completos, no pueden quedar campos vacios.
 
 7. Requisito de Créditos API
 
@@ -85,6 +86,7 @@ ingrese el ID de cliente del token nuevo y el secreto del cliente para obtener e
 |Refresh token||1000.6nb54m79eaacb58003dc77898a78e0a7|
 |client id||1000.6nb54m79eaacb58003dc77898a78e0a7|
 |Client secret||1000.6nb54m79eaacb58003dc77898a78e0a7|
+|Asignar a variable||Variable|
 
 ### Agregar Personas
   
@@ -94,8 +96,9 @@ Agregue a las personas con las que desea compartir el documento
 |Email||someone@gmail.com|
 |Name||David|
 |Tipo de acción|||
-|Orden de firma|| |
+|Orden de firma||1 |
 |Mensaje privado||Comuníquese con nosotros si tiene más consultas|
+|Asignar a variable||Variable|
 
 ### Enviar
   
@@ -105,7 +108,7 @@ Envía el documento a firmar
 
 ### Crear documento
   
-Configura el documento a enviar para firmar
+Configura el documento a enviar para firmar.
 |Parámetros|Descripción|ejemplo|
 | --- | --- | --- |
 |Carpeta|| |
@@ -131,3 +134,5 @@ Configura el documento a enviar para firmar
 |Ancho||100|
 |Alto||20|
 |Descripción||Lorem Ipsum is simply dummy text of the printing and typesetting industry.|
+|Índice de destinatario (0, 1,..)||0|
+|Asignar resultado a variable|| |

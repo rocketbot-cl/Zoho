@@ -28,7 +28,7 @@ Agregue a las personas con las que desea compartir el documento
 Envía el documento a firmar
 
 4. Crear documento  
-Configura el documento a enviar para firmar
+Configura el documento a enviar para firmar.
 
 5. Agregar campos  
    

@@ -28,7 +28,7 @@ Add the people you want to share the document with
 Send the document to sign
 
 4. Create Document in Zoho  
-share the document to other people to sign
+share the document to other people to sign.
 
 5. Add Fields  
    
