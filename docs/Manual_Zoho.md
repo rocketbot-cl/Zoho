@@ -83,7 +83,8 @@ Input the fresh token client id and client secret to get the access token
 | --- | --- | --- |
 |Refresh token||1000.6nb54m79eaacb58003dc77898a78e0a7|
 |client id||1000.6nb54m79eaacb58003dc77898a78e0a7|
-|client secret||1000.6nb54m79eaacb58003dc77898a78e0a7|
+|Client secret||1000.6nb54m79eaacb58003dc77898a78e0a7|
+|Asign to variable||Variable|
 
 ### Add People
   
@@ -95,6 +96,7 @@ Add the people you want to share the document with
 |Action|||
 |Order||1|
 |Private Note||Please get back to us for further queries|
+|Asign to variable||Variable|
 
 ### Submit
   
@@ -104,7 +106,7 @@ Send the document to sign
 
 ### Create Document in Zoho
   
-share the document to other people to sign
+share the document to other people to sign.
 |Parameters|Description|example|
 | --- | --- | --- |
 |folder|| |
@@ -130,3 +132,5 @@ share the document to other people to sign
 |Width||100|
 |Height||20|
 |Description||Lorem Ipsum is simply dummy text of the printing and typesetting industry.|
+|Recipient index (0, 1,..)||0|
+|Success|| |

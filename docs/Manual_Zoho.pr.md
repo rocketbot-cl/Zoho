@@ -76,57 +76,61 @@ Todos os campos dos comandos devem ser preenchidos; nenhum campo pode ficar vazi
     - Para executar o comando Enviar com sucesso, a organização deve ter Créditos da API ativos no Zoho Sign (adquiríveis em Configurações > Assinatura). Sem esses créditos, o envio da API retornará o erro 12000.
 ## Descrição do comando
 
-### 
+### Login
   
-
+insira o ID do cliente do token novo e o segredo do cliente para obter o token de acesso
 |Parâmetros|Descrição|exemplo|
 | --- | --- | --- |
-|Refresh token||1000.6nb54m79eaacb58003dc77898a78e0a7|
-|client id||1000.6nb54m79eaacb58003dc77898a78e0a7|
-|client secret||1000.6nb54m79eaacb58003dc77898a78e0a7|
+|Token de atualização||1000.6nb54m79eaacb58003dc77898a78e0a7|
+|ID do cliente||1000.6nb54m79eaacb58003dc77898a78e0a7|
+|Segredo do cliente||1000.6nb54m79eaacb58003dc77898a78e0a7|
+|Atribuir à variável||Variable|
 
-### 
+### Adicionar Pessoas
   
-
+Adicione as pessoas com as quais você deseja compartilhar o documento
 |Parâmetros|Descrição|exemplo|
 | --- | --- | --- |
 |Email||someone@gmail.com|
-|Name||David|
-|Action|||
-|Order||1|
-|Private Note||Please get back to us for further queries|
+|Nome||David|
+|Tipo de ação|||
+|Ordem de assinatura||1|
+|Nota Privada||Entre em contato conosco para mais consultas|
+|Atribuir à variável||Variable|
 
-### 
+### Enviar
   
-
+Envía el documento a firmar
 |Parâmetros|Descrição|exemplo|
 | --- | --- | --- |
 
-### 
+### Criar documento
   
-
+Configure o documento a ser enviado para assinatura.
 |Parâmetros|Descrição|exemplo|
 | --- | --- | --- |
-|folder|| |
-|Request Name||Ex. Python Test|
-|Expiration Date||15|
-|Sequential|||
-|Email Reminders|||
-|Reminder Period||5|
-|Success|| |
+|pasta|| |
+|Nome obrigatório||Ex. Teste Python|
+|Data de expiração||15|
+|Sequencial?|||
+|Lembretes por email|||
+|Período de lembrete||5|
+|Sucesso|| |
 
-### 
+### Adicionar campos
   
-
+ 
 |Parâmetros|Descrição|exemplo|
 | --- | --- | --- |
-|Field Type|||
-|Mandatory|||
-|Field Name|| |
-|Page Number||2|
-|Document Number||1|
-|Y-Coordinate||150|
-|X-Coordinate||500|
-|Width||100|
-|Height||20|
-|Description||Lorem Ipsum is simply dummy text of the printing and typesetting industry.|
+|Tipo de campo|||
+|Obrigatório?|||
+|Nome do campo|| |
+|Número da página||2|
+|Número do documento||0|
+|Coordenada Y||150|
+|Coordenada X||500|
+|Largura||100|
+|Altura||20|
+|Descrição||Lorem Ipsum é simplesmente um texto fictício da indústria de impressão e tipografia.|
+|Índice do destinatário (0, 1,..)||0|
+|Sucesso|| |

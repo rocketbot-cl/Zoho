@@ -18,20 +18,20 @@ Para instalar o módulo no Rocketbot Studio, pode ser feito de duas formas:
 ## Overview
 
 
-1.   
+1. Login  
+insira o ID do cliente do token novo e o segredo do cliente para obter o token de acesso
 
+2. Adicionar Pessoas  
+Adicione as pessoas com as quais você deseja compartilhar o documento
 
-2.   
+3. Enviar  
+Envía el documento a firmar
 
+4. Criar documento  
+Configure o documento a ser enviado para assinatura.
 
-3.   
-
-
-4.   
-
-
-5.   
-  
+5. Adicionar campos  
+   
 
 
 
